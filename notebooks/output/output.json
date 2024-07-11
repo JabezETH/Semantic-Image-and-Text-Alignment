@@ -1,0 +1,5 @@
+{
+    "output_path": "./output/blended_image.png",
+    "position": "bottom-right",
+    "alpha": 0.5
+}

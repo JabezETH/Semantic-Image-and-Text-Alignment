@@ -1,3 +1,8 @@
 pandas
 openai
 ultralytics
+python-dotenv
+requests
+Pillow
+numpy
+pyautogen
