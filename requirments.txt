@@ -6,3 +6,5 @@ requests
 Pillow
 numpy
 pyautogen
+flask
+flask-cors
