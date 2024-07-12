@@ -1,5 +1,30 @@
 {
     "output_path": "./output/blended_image.png",
-    "position": "bottom-right",
+    "positions": [
+        [
+            20,
+            20
+        ],
+        [
+            120,
+            70
+        ],
+        [
+            220,
+            120
+        ],
+        [
+            320,
+            170
+        ],
+        [
+            420,
+            220
+        ],
+        [
+            520,
+            270
+        ]
+    ],
     "alpha": 0.5
 }
