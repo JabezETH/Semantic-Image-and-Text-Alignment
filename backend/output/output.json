@@ -1,12 +1,12 @@
 {
     "output_path": "./output/blended_image.png",
     "positions": [
-        "top left",
-        "top right",
-        "center center",
-        "bottom left",
         "bottom center",
-        "bottom right"
+        "center center",
+        "top center",
+        "top right",
+        "bottom right",
+        "bottom left"
     ],
     "alpha": 0.5
 }

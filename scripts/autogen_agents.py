@@ -140,7 +140,7 @@ def get_position_from_constant(position_name, larger_image, smaller_image):
 
     return positions.get(position_name, (0, 0))
 
-def blend_images(position_names, alpha: float = 0.5, output_dir: str = './output') -> str:
+def blend_images(position_names: list, alpha: float = 0.5, output_dir: str = './output') -> str:
     """
     Blends multiple small images by placing them on top of a larger image at specified positions without overlapping and saves the blended image.
 
@@ -273,102 +273,70 @@ llm_config={
 
 
 
-# Let's first define the assistant agent that suggests tool calls.
+import os
+import autogen
+from autogen import ConversableAgent
+
+# Define the assistant agent that suggests tool calls.
 img_blend_assistant = autogen.AssistantAgent(
-    name="image_blending_assistant",
+    name="img_blend_assistant",
     code_execution_config=False,
-    system_message=
-    
-"""You are a helpful AI assistant. 
+    system_message="""You are a helpful AI assistant. 
 The main problems you will be solving include:
-- suggest diffrent "positions" to make a good advertising 
+- suggest different "positions" to make a good advertising based on the feedback from 'img_critic_assistant'
     use this as example: "List of position names for each small image, e.g., ["top left", "top right", "center center", "bottom left", "bottom center", "bottom right"]"
     make sure you are giving only 6 positions
     make sure that the images will not overlap
-- This are the discription of the pictures:
-    1. the first position is for a picture that have a text saying 'shop now '
-    2. the second position is for a picture that have a text saying 'Discover 12 unique tea flavours delivered to your door'
-    3. the third position is for a picture that have a text saying 'Enjoy tea delivered to your home'
-    4. the fourth position is for a picture that shows a hand pointing
-    5. the fifth position is for a picture that have a text saying 'tap to get letter box delivery of tea'
-    6. the sixth position is for a picture that have a text saying 'off black generation picture'
-
-- your task:
-    - considering the above discription for each picture find a way to position each picture to give a good advertaizing 
-    based on the recomendation you got from 'img_critic_assistant'
-    - Then modifay the position after the comment from 'img_critic_assistant'
-    """
-    ,
-    llm_config=llm_config,
-    function_map={
-        "blend_images": blend_images,
-        "read_img": read_img
-    }
-        
+- picture positions: ['shop now','Discover 12 unique tea flavours delivered to your door', 'Enjoy tea delivered to your home', hand pointing, 'tap to get letter box delivery of tea','off black generation picture']
+- Your task:
+    - Considering the above descriptions for each picture, find a way to position each picture to give good advertising based on the recommendation you got from 'img_critic_assistant'.
+    - 'TERMINATE' when the image you blend looks like the feedback.
+    """,
+    llm_config=llm_config2
 )
 
 img_critic_assistant = autogen.AssistantAgent(
-    name="image_blending_assistant",
+    name="img_critic_assistant",
     code_execution_config=False,
-    system_message="You are a advertizing image critic AI assistant. "
-    """You task is to critic the 'output.json' from 'img_blend_assistant'
-    critic the following part 
-  
-                            - the first position is for a picture that have a text saying 'shop now '
-                            - the second position is for a picture that have a text saying 'Discover 12 unique tea flavours delivered to your door'
-                            - the third position is for a picture that have a text saying 'Enjoy tea delivered to your home'
-                            - the fourth position is for a picture that shows a hand pointing
-                            - the fifth position is for a picture that have a text saying 'tap to get letter box delivery of tea'
-                            - the sixth position is for a picture that have a text saying 'off black generation picture'
-    recomend 'img_blend_assistant' for a better advertising by comparing to image 1 which is a good advertisement.
-    "Return 'TERMINATE' when the task is done.""",
-    llm_config=llm_config,
-    function_map={
-        "blend_images": blend_images,
-        "read_img": read_img
-    }
-        
+    system_message="""You are an advertising image critic AI assistant. 
+Your task is to critique the 'output.json' from 'img_blend_assistant'.
+positions: ['shop now','Discover 12 unique tea flavours delivered to your door', 'Enjoy tea delivered to your home', hand pointing, 'tap to get letter box delivery of tea','off black generation picture']
+Recommend 'img_blend_assistant' for better advertising by comparing it to image 1, which is a good advertisementand critic on the above image positions only.
+Return 'TERMINATE' when the task is done.""",
+    llm_config=llm_config2
 )
 
-
-
-
-# The user proxy agent is used for interacting with the assistant agent
-# and executes tool calls.
+# The user proxy agent is used for interacting with the assistant agent and executes tool calls.
 def termination_msg(x):
     return isinstance(x, dict) and "TERMINATE" == str(x.get("content", ""))[-9:].upper()
+
 user_proxy = autogen.UserProxyAgent(
     name="user_proxy",
+    system_message="Executor. Execute the functions recommended by the assistants.",
     is_termination_msg=termination_msg,
     human_input_mode="NEVER",
     code_execution_config=False
-    # # is_termination_msg=lambda x: "content" in x and x["content"] is not None and x["content"].rstrip().endswith("TERMINATE"),
-    # # code_execution_config={"work_dir": "planning"},
-    # function_map={"blend_images": blend_images},
-    # code_execution_config=False
 )
 
+# Register functions for execution
+img_blend_assistant.register_for_llm(name="blend_images", description="Image blender")(blend_images)
+img_critic_assistant.register_for_llm(name="read_img", description="Image reader")(read_img) 
+user_proxy.register_for_execution(name="blend_images")(blend_images)
+user_proxy.register_for_execution(name="read_img")(read_img)
 
-
+# Create group chat
 groupchat = autogen.GroupChat(
     agents=[user_proxy, img_blend_assistant, img_critic_assistant],
- 
     messages=[],  # The initial messages in the chat
-    max_round=20,  # Maximum rounds of conversation
-    select_speaker_message_template = 
-    """ This is the flow of the converstion:
-    1. 'user_proxy'
-    2. 'img_blend_assistant'
-    3. 'img_critic_assistant'
-    4. 'img_blend_assistant'
-
-"""
+    max_round=15  # Maximum rounds of conversation
 )
 
+# Create group chat manager
 manager = autogen.GroupChatManager(
     groupchat=groupchat,
     llm_config=llm_config2
 )
+
 
 def excute_agents():
     message = user_proxy.initiate_chat(
