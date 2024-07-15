@@ -1,12 +1,28 @@
 {
     "output_path": "./output/blended_image.png",
     "positions": [
-        "bottom center",
-        "top right",
-        "top left",
         "center center",
+        "top center",
+        "top right",
         "bottom left",
-        "top centert"
+        "bottom left",
+        "bottom center"
+    ],
+    "brightness_values": [
+        1.9,
+        1.8,
+        1.2,
+        1.7,
+        1.7,
+        2
+    ],
+    "layers": [
+        1,
+        2,
+        3,
+        4,
+        4,
+        1
     ],
     "alpha": 0.5
 }
