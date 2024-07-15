@@ -12,7 +12,7 @@
   <p align="center">
     Automated Storyboard Synthesis for Digital Advertising
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template"><strong>Explore the blog »</strong></a>
+    <a href="https://medium.com/@jabezkassa2022/2d4948a0a06d"><strong>Explore the blog »</strong></a>
     <br />
     <br />
   </p>
@@ -63,11 +63,11 @@ In this transformative era of advertising and recognizing the potential for tech
 
 This is major frameworks/libraries used in this project.
 
-- [React-url](https://microsoft.github.io/autogen/docs/Getting-Started/)]
-- [![OpenCV][React.js]][React-url]
-- [![OpenAI API][React.js]][React-url]
-- [![React][React.js]][React-url]
-- [![Flask][Vue.js]][Vue-url]
+- [React-url](https://microsoft.github.io/autogen/docs/Getting-Started/)
+- [OpenCV](https://opencv.org/)
+- [OpenAI API Vision](https://platform.openai.com/docs/guides/vision)
+- [React](https://react.dev/)
+- [Flask](https://flask.palletsprojects.com/en/3.0.x/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -79,8 +79,10 @@ Follow the following steps to run the project locally.
 
 ### Prerequisites
 
+```sh
 - pip install requirments.txt
 - npm install npm
+```
 
 ### Installation
 
@@ -100,33 +102,23 @@ _Below is an example of how you can instruct your audience on installing and set
 ## Usage
 
 Run the backend:
+
+```sh
 cd Semantic-Image-and-Text-Alignment
 cd backend
 python3 app.py
+```
 
 Run the frontend:
+
+```sh
 cd Semantic-Image-and-Text-Alignment
 cd frontend
 cd preview
 npm start
+```
 
 _For more examples, please refer to the [Blog](https://medium.com/@jabezkassa2022/2d4948a0a06d)_
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- ROADMAP -->
-
-## Roadmap
-
-- [x] Add Changelog
-- [x] Add back to top links
-- [ ] Add Additional Templates w/ Examples
-- [ ] Add "components" document to easily copy & paste sections of the readme
-- [ ] Multi-language Support
-  - [ ] Chinese
-  - [ ] Spanish
-
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -142,6 +134,6 @@ Jabez Kassa - [@linkedin](https://www.linkedin.com/in/jabez-kassa-37b743193/) - 
 
 ## Acknowledgments
 
-This project is done as an assignment for 10 Academy
+This project is done as an assignment for 10 Academy. I would like to thank 10 Academy for allowing me to work in this project.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
